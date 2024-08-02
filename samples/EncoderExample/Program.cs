@@ -7,10 +7,11 @@ using Workstation.ServiceModel.Ua;
 using var ms = new MemoryStream();
 
 var provider = new JsonEncodingProvider(new JsonEncoderOptions() {
-    UseReversibleEncoding = false
+    UseReversibleEncoding = false,
+    WriteIndented = true
 });
 
-using (var encoder = provider.CreateEncoder(ms, null, true)) {
+using (var encoder = provider.CreateEncoder(ms, context: null, keepStreamOpen: true)) {
     encoder.WriteRequest(new ReadRequest() { 
         MaxAge = 1000,
         NodesToRead = [
