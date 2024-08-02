@@ -1,13 +1,9 @@
-# OPC UA JSON Encoding for Workstation.UaClient
+﻿# About
 
-This repository defines OPC UA JSON encoder and decoder classes for the [Workstation.UaClient](https://github.com/convertersystems/opc-ua-client) .NET OPC UA client library using System.Text.Json.
-
-The encoder uses [Utf8JsonWriter](https://learn.microsoft.com/en-us/dotnet/api/system.text.json.utf8jsonwriter) for maximum performance. The decoder uses [JsonDocument](https://learn.microsoft.com/en-us/dotnet/api/system.text.json.jsondocument) to allow properties on OPC UA data types to be decoded from JSON in an order-agnostic way.
+Jaahas.OpcUa.JsonEncoding provides an [OPC UA JSON encoder and decoder](https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4) for the [Workstation.UaClient](https://github.com/convertersystems/opc-ua-client) .NET OPC UA client library using System.Text.Json. The encoder supports both the reversible and non-reversible forms of the OPC UA JSON encoding.
 
 
 # Getting Started
-
-Install the [Jaahas.OpcUa.JsonEncoding](https://www.nuget.org/packages/Jaahas.OpcUa.JsonEncoding) NuGet package.
 
 The `JsonEncoder` and `JsonDecoder` classes implement the `Workstation.UaClient` `IEncoder` and `IDecoder` interfaces respectively. The `JsonEncodingProvider` class implements `IEncodingProvider`.
 
@@ -84,17 +80,3 @@ The above code produces the following output using the [non-reversible form](htt
   ]
 }
 ```
-
-
-# Building the Solution
-
-The repository uses [Cake](https://cakebuild.net/) for cross-platform build automation. The build script allows for metadata such as a build counter to be specified when called by a continuous integration system such as TeamCity.
-
-A build can be run from the command line using the [build.ps1](/build.ps1) PowerShell script or the [build.sh](/build.sh) Bash script. For documentation about the available build script parameters, see [build.cake](/build.cake).
-
-
-# Software Bill of Materials
-
-To generate a Software Bill of Materials (SBOM) for the repository in [CycloneDX](https://cyclonedx.org/) XML format, run [build.ps1](./build.ps1) or [build.sh](./build.sh) with the `--target BillOfMaterials` parameter.
-
-The resulting SBOM is written to the `artifacts/bom` folder.
