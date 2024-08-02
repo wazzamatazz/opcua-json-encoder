@@ -1,45 +1,89 @@
-# C# Repository Template
+# OPC UA JSON Encoding for Workstation.UaClient
 
-Repository template for a C# project.
+This repository defines OPC UA JSON encoder and decoder classes for the [Workstation.UaClient](https://github.com/convertersystems/opc-ua-client) .NET OPC UA client library using System.Text.Json.
+
+The encoder uses [Utf8JsonWriter](https://learn.microsoft.com/en-us/dotnet/api/system.text.json.utf8jsonwriter) for maximum performance. The decoder uses [JsonDocument](https://learn.microsoft.com/en-us/dotnet/api/system.text.json.jsondocument) to allow properties on OPC UA data types to be decoded from JSON in an order-agnostic way.
 
 
 # Getting Started
 
-- Create a new repository on GitHub and choose this repository as the template, or click on the _"Use this template"_ button on the repository home page.
-- Rename the solution file in the root of the repository ([RENAME-ME.sln](/RENAME-ME.sln)).
-- Update [Directory.Build.props](/Directory.Build.props) in the root folder and replace the placeholder values in the shared project properties (e.g. `{{COPYRIGHT_START_YEAR}}`).
-- Update [build.cake](/build.cake) in the root folder and replace the `DefaultSolutionFile` constant at the start of the file with the name of your solution file.
-- Create new library and application projects in the `src` folder.
-- Create test and benchmarking projects in the `test` folder.
-- Create example projects that demonstrate the library and application projects in the `samples` folder.
+Install the [Jaahas.OpcUa.JsonEncoding](https://www.nuget.org/packages/Jaahas.OpcUa.JsonEncoding) NuGet package.
 
+The `JsonEncoder` and `JsonDecoder` classes implement the `Workstation.UaClient` `IEncoder` and `IDecoder` interfaces respectively. The `JsonEncodingProvider` class implements `IEncodingProvider`.
 
-# Repository Structure
+Example:
 
-The repository is organised as follows:
+```csharp
+var provider = new JsonEncodingProvider(encoderOptions: new JsonEncoderOptions() {
+    UseReversibleEncoding = false,
+    WriteIndented = true
+});
 
-- `[root]`
-  - `.editorconfig` - Code style rules (see [here](https://editorconfig.org/) for details).
-  - `.gitattributes`
-  - `.gitignore`
-  - `build.cake` - [Cake](https://cakebuild.net/) script for building the projects.
-  - `build.ps1` - PowerShell script to bootstrap and run the Cake script.
-  - `build.sh` - Bash shell script to bootstrap and run the Cake script.
-  - `Directory.Build.props` - Common MSBuild properties and targets (see [here](https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build) for details).
-  - `Directory.Build.targets` - Common MSBuild properties and targets (see [here](https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build) for details). 
-  - `Directory.Packages.props` - Common NuGet package versions (see [here](https://devblogs.microsoft.com/nuget/introducing-central-package-management/) for details). 
-  - `LICENSE` - Licence details.
-  - `README.md`
-  - `RENAME-ME.sln` - Visual Studio solution file.
-  - `[build]` - Resources for building the solution.
-    - `Copyright.props` - Sets the copyright message for all projects in the solution.
-    - `NetFX.targets` - Adds package references for building projects that target .NET Framework on non-Windows systems.
-    - `version.json` - Defines version numbers used when building the projects.
-  - `[samples]` - Example projects to demonstrate the usage of the repository libraries and applications.
-    - `Directory.Build.props` - Common MSBuild properties and targets related to example projects (see [here](https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build) for details).
-  - `[src]` - Source code for repository libraries and applications.
-  - `[test]` - Test and benchmarking projects.
-    - `Directory.Build.props` - Common MSBuild properties and targets related to test projects (see [here](https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build) for details).
+using var ms = new MemoryStream();
+
+using (var encoder = provider.CreateEncoder(ms, context: null, keepStreamOpen: true)) {
+    encoder.WriteRequest(new ReadRequest() { 
+        MaxAge = 1000,
+        NodesToRead = [
+            new ReadValueId() {
+                NodeId = NodeId.Parse("ns=2;s=Demo.Static.Scalar.UInt32"),
+                AttributeId = AttributeIds.Value
+            },
+            new ReadValueId() {
+                NodeId = NodeId.Parse("ns=2;s=Demo.Static.Scalar.String"),
+                AttributeId = AttributeIds.Value
+            }
+        ],
+        TimestampsToReturn = TimestampsToReturn.Both,
+        RequestHeader = new RequestHeader() { 
+            AuditEntryId = "Test",
+            RequestHandle = 42
+        }
+    });
+}
+
+Console.WriteLine(Encoding.UTF8.GetString(ms.ToArray()));
+```
+
+The above code produces the following output using the [non-reversible form](https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.1) of the OPC UA JSON encoding:
+
+```json
+{
+  "RequestHeader": {
+    "AuthenticationToken": null,
+    "Timestamp": "0001-01-01T00:00:00",
+    "RequestHandle": 42,
+    "ReturnDiagnostics": 0,
+    "AuditEntryId": "Test",
+    "TimeoutHint": 0,
+    "AdditionalHeader": null
+  },
+  "MaxAge": 1000,
+  "TimestampsToReturn": "Both_2",
+  "NodesToRead": [
+    {
+      "NodeId": {
+        "IdType": 1,
+        "Id": "Demo.Static.Scalar.UInt32",
+        "Namespace": 2
+      },
+      "AttributeId": 13,
+      "IndexRange": null,
+      "DataEncoding": null
+    },
+    {
+      "NodeId": {
+        "IdType": 1,
+        "Id": "Demo.Static.Scalar.String",
+        "Namespace": 2
+      },
+      "AttributeId": 13,
+      "IndexRange": null,
+      "DataEncoding": null
+    }
+  ]
+}
+```
 
 
 # Building the Solution
