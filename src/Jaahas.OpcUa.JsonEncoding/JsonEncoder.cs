@@ -13,7 +13,7 @@ namespace Jaahas.OpcUa.JsonEncoding {
     /// <see cref="IEncoder"/> that encodes data using the OPC UA JSON encoding.
     /// </summary>
     /// <remarks>
-    ///   The OPC UA JSON encoding is defined <a href=https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4">here</a>.
+    ///   The OPC UA JSON encoding is defined <a href="https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4">here</a>.
     /// </remarks>
     public sealed class JsonEncoder : IEncoder {
 
