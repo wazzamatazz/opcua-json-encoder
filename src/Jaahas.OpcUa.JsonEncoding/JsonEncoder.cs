@@ -131,12 +131,13 @@ namespace Jaahas.OpcUa.JsonEncoding {
         private void WriteNull(string? fieldName = null) {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.1
 
-            if (fieldName == null) {
-                _writer.WriteNullValue();
+            if (fieldName != null) {
+                if (_options.UseReversibleEncoding) {
+                    return;
+                }
+                _writer.WritePropertyName(fieldName);
             }
-            else {
-                _writer.WriteNull(fieldName);
-            }
+            _writer.WriteNullValue();
         }
 
 
@@ -145,6 +146,9 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.2
 
             if (fieldName != null) {
+                if (_options.UseReversibleEncoding && value == default) {
+                    return;
+                }
                 _writer.WritePropertyName(fieldName);
             }
             _writer.WriteBooleanValue(value);
@@ -156,6 +160,9 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.3
 
             if (fieldName != null) {
+                if (_options.UseReversibleEncoding && value == default) {
+                    return;
+                }
                 _writer.WritePropertyName(fieldName);
             }
             _writer.WriteNumberValue(value);
@@ -167,6 +174,9 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.3
 
             if (fieldName != null) {
+                if (_options.UseReversibleEncoding && value == default) {
+                    return;
+                }
                 _writer.WritePropertyName(fieldName);
             }
             _writer.WriteNumberValue(value);
@@ -178,6 +188,9 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.3
 
             if (fieldName != null) {
+                if (_options.UseReversibleEncoding && value == default) {
+                    return;
+                }
                 _writer.WritePropertyName(fieldName);
             }
             _writer.WriteNumberValue(value);
@@ -189,6 +202,9 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.3
 
             if (fieldName != null) {
+                if (_options.UseReversibleEncoding && value == default) {
+                    return;
+                }
                 _writer.WritePropertyName(fieldName);
             }
             _writer.WriteNumberValue(value);
@@ -200,6 +216,9 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.3
 
             if (fieldName != null) {
+                if (_options.UseReversibleEncoding && value == default) {
+                    return;
+                }
                 _writer.WritePropertyName(fieldName);
             }
             _writer.WriteNumberValue(value);
@@ -211,6 +230,9 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.3
 
             if (fieldName != null) {
+                if (_options.UseReversibleEncoding && value == default) {
+                    return;
+                }
                 _writer.WritePropertyName(fieldName);
             }
             _writer.WriteNumberValue(value);
@@ -222,6 +244,9 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.3
 
             if (fieldName != null) {
+                if (_options.UseReversibleEncoding && value == default) {
+                    return;
+                }
                 _writer.WritePropertyName(fieldName);
             }
             // Int64 is encoded as a string.
@@ -234,6 +259,9 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.3
 
             if (fieldName != null) {
+                if (_options.UseReversibleEncoding && value == default) {
+                    return;
+                }
                 _writer.WritePropertyName(fieldName);
             }
             // UInt64 is encoded as a string.
@@ -246,6 +274,9 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.4
 
             if (fieldName != null) {
+                if (_options.UseReversibleEncoding && value == default) {
+                    return;
+                }
                 _writer.WritePropertyName(fieldName);
             }
             _writer.WriteNumberValue(value);
@@ -257,6 +288,9 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.4
 
             if (fieldName != null) {
+                if (_options.UseReversibleEncoding && value == default) {
+                    return;
+                }
                 _writer.WritePropertyName(fieldName);
             }
             _writer.WriteNumberValue(value);
@@ -268,22 +302,18 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.5
 
             if (value == null) {
-                if (fieldName != null) {
-                    // Ignore null fields in structures.
-                    // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.1
-                    return;
-                }
-                WriteNull(null);
+                WriteNull(fieldName);
                 return;
+            }
+
+            if (fieldName != null) {
+                _writer.WritePropertyName(fieldName);
             }
 
             if (_context.MaxStringLength > 0 && Encoding.UTF8.GetByteCount(value) > _context.MaxStringLength) {
                 throw new ServiceResultException(StatusCodes.BadEncodingLimitsExceeded, string.Format(Resources.Error_MaximumStringLengthExceeded, _context.MaxStringLength));
             }
 
-            if (fieldName != null) {
-                _writer.WritePropertyName(fieldName);
-            }
             _writer.WriteStringValue(value);
         }
 
@@ -293,6 +323,9 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.6
 
             if (fieldName != null) {
+                if (_options.UseReversibleEncoding && value == default) {
+                    return;
+                }
                 _writer.WritePropertyName(fieldName);
             }
             _writer.WriteStringValue(value);
@@ -304,6 +337,9 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.7
 
             if (fieldName != null) {
+                if (_options.UseReversibleEncoding && value == default) {
+                    return;
+                }
                 _writer.WritePropertyName(fieldName);
             }
             _writer.WriteStringValue(value);
@@ -315,22 +351,18 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.8
 
             if (value == null) {
-                if (fieldName != null) {
-                    // Ignore null fields in structures.
-                    // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.1
-                    return;
-                }
-                WriteNull(null);
+                WriteNull(fieldName);
                 return;
+            }
+
+            if (fieldName != null) {
+                _writer.WritePropertyName(fieldName);
             }
 
             if (_context.MaxByteStringLength > 0 && value.Length > _context.MaxByteStringLength) {
                 throw new ServiceResultException(StatusCodes.BadEncodingLimitsExceeded, string.Format(Resources.Error_MaximumByteStringLengthExceeded, _context.MaxByteStringLength));
             }
 
-            if (fieldName != null) {
-                _writer.WritePropertyName(fieldName);
-            }
             _writer.WriteBase64StringValue(value);
         }
 
@@ -340,12 +372,7 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.9
 
             if (value == null) {
-                if (fieldName != null) {
-                    // Ignore null fields in structures.
-                    // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.1
-                    return;
-                }
-                WriteNull(null);
+                WriteNull(fieldName);
                 return;
             }
 
@@ -361,12 +388,7 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.10
 
             if (value == null) {
-                if (fieldName != null) {
-                    // Ignore null fields in structures.
-                    // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.1
-                    return;
-                }
-                WriteNull(null);
+                WriteNull(fieldName);
                 return;
             }
 
@@ -420,12 +442,7 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.11
 
             if (value == null) {
-                if (fieldName != null) {
-                    // Ignore null fields in structures.
-                    // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.1
-                    return;
-                }
-                WriteNull(null);
+                WriteNull(fieldName);
                 return;
             }
 
@@ -491,18 +508,17 @@ namespace Jaahas.OpcUa.JsonEncoding {
         public void WriteStatusCode(string? fieldName, StatusCode value) {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.12
 
-            if (value == StatusCodes.Good) {
-                return;
-            }
-
-            if (fieldName != null) {
-                _writer.WritePropertyName(fieldName);
-            }
-
             if (_options.UseReversibleEncoding) {
-                WriteUInt32(null, value.Value);
+                WriteUInt32(fieldName, value.Value);
             }
             else {
+                if (fieldName != null) {
+                    if (value.Value == StatusCodes.Good) {
+                        return;
+                    }
+
+                    _writer.WritePropertyName(fieldName);
+                }
                 _writer.WriteStartObject();
                 WriteUInt32("Code", value.Value);
                 WriteString("Symbol", value.GetSymbolName() ?? "");
@@ -516,12 +532,7 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.14
 
             if (value == null) {
-                if (fieldName != null) {
-                    // Ignore null fields in structures.
-                    // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.1
-                    return;
-                }
-                WriteNull(null);
+                WriteNull(fieldName);
                 return;
             }
 
@@ -554,12 +565,7 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.15
 
             if (value == null) {
-                if (fieldName != null) {
-                    // Ignore null fields in structures.
-                    // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.1
-                    return;
-                }
-                WriteNull(null);
+                WriteNull(fieldName);
                 return;
             }
 
@@ -584,12 +590,7 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.16
 
             if (value == null) {
-                if (fieldName != null) {
-                    // Ignore null fields in structures.
-                    // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.1
-                    return;
-                }
-                WriteNull(null);
+                WriteNull(fieldName);
                 return;
             }
 
@@ -660,12 +661,7 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.16
 
             if (value == null) {
-                if (fieldName != null) {
-                    // Ignore null fields in structures.
-                    // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.1
-                    return;
-                }
-                WriteNull(null);
+                WriteNull(fieldName);
                 return;
             }
 
@@ -683,12 +679,7 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.18
 
             if (value == null) {
-                if (fieldName != null) {
-                    // Ignore null fields in structures.
-                    // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.1
-                    return;
-                }
-                WriteNull(null);
+                WriteNull(fieldName);
                 return;
             }
 
@@ -728,13 +719,13 @@ namespace Jaahas.OpcUa.JsonEncoding {
                 return;
             }
 
+            if (!_options.UseReversibleEncoding) {
+                WriteVariantBody(fieldName, value);
+                return;
+            }
+            
             if (fieldName != null) {
                 _writer.WritePropertyName(fieldName);
-            }
-
-            if (!_options.UseReversibleEncoding) {
-                WriteVariantBody(null, value);
-                return;
             }
 
             _writer.WriteStartObject();
@@ -922,12 +913,7 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.13
 
             if (value == null) {
-                if (fieldName != null) {
-                    // Ignore null fields in structures.
-                    // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.1
-                    return;
-                }
-                WriteNull(null);
+                WriteNull(fieldName);
                 return;
             }
 
@@ -966,12 +952,8 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.6
 
             if (value == null) {
-                if (fieldName != null) {
-                    // Ignore null fields in structures.
-                    // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.1
-                    return;
-                }
-                value = Activator.CreateInstance<T>();
+                WriteNull(fieldName);
+                return;
             }
 
             if (fieldName != null) {
@@ -1032,23 +1014,17 @@ namespace Jaahas.OpcUa.JsonEncoding {
             // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.5
 
             if (values == null) {
-                if (fieldName != null) {
-                    // Ignore null fields in structures.
-                    // https://reference.opcfoundation.org/Core/Part6/v105/docs/5.4.2.1
-                    return;
-                }
-                WriteNull(null);
+                WriteNull(fieldName);
                 return;
             }
 
             if (_context.MaxArrayLength > 0 && values.Length > _context.MaxArrayLength) {
                 throw new ServiceResultException(StatusCodes.BadEncodingLimitsExceeded, string.Format(Resources.Error_MaximumArrayLengthExceeded, _context.MaxArrayLength));
             }
-
+            
             if (fieldName != null) {
                 _writer.WritePropertyName(fieldName);
             }
-
             WriteArrayCore(values, 0, new int[values.Rank], writeValue);
         }
 
